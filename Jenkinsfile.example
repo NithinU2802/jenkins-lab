@@ -1,0 +1,37 @@
+stages {
+    stage('Clone') {
+        steps {
+            git branch: 'master'
+            url: ''
+        }
+    }
+    stage('Build') {
+        steps {
+            sh '''
+            docker build -t app:${BUILD_NUMBER}
+            '''
+        }
+    }
+    stage('Test') {
+        steps {
+            sh '''
+            docker run -it app:${BUILD_NUMBER}
+            curl localhost: 5000
+            '''
+        }
+    }
+    stage('Package') {
+        steps {
+            sh '''
+            docker push jenkins-lab/app:${BUILD_NUMBER}
+            '''
+        }
+    }
+    stage('Deploy') {
+        steps {
+            sh '''
+            echo "Devops to do: Add some 1337 deploy logic here."
+            '''
+        }
+    }
+}
